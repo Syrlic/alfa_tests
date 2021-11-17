@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
@@ -36,12 +37,10 @@ public class CalculateCreditTests extends TestBase {
             $("input[name='firstName']").setValue("Семен").pressTab();
         });
         step("Fill out middle names", () -> {
-        //    $("input[name='middleName']").scrollTo();
             $("input[name='middleName']").setValue("Анатольевич").pressTab();
         });
         step("Select gender if displaying", () -> {
             sleep(2000);
-        //    if ($("button[data-test-id='sex-m']").isDisplayed())
                 $("button[data-test-id='sex-m']").scrollTo().click();
         });
         step("Fill out phone", () -> {
@@ -58,10 +57,6 @@ public class CalculateCreditTests extends TestBase {
         step("Click on Continued to step 2", () -> {
             $$("button[data-test-id='submit-button']").find(text("Продолжить")).click();
         });
-//        step("Verify that step 2 is opened", () -> {
-//            sleep(2000);
-//            $("h3.heading").shouldHave(text("Заявка на кредит наличными или рефинансирование"));
-//        });
         step("Chech Gosuslugi selecor at the step 2", () -> {
             sleep(2000);
             if ($(withText("Я помню пароль от личного кабинета Госуслуг")).isDisplayed()) {
@@ -109,9 +104,6 @@ public class CalculateCreditTests extends TestBase {
             $("input[name='workCompanyName']").setValue("ООО \"СБЕРБАНК-ТЕЛЕКОМ\"");
             $("div[data-for=workCompanyName]").$(withText("СБЕРБАНК-ТЕЛЕКОМ")).click();
         });
-//        step("Fill out work company INN", () -> {
-//            $("input[name='workInn']").setValue("7736264044");
-//        });
         step("Fill out salary", () -> {
             $("input[name='income']").setValue("50000").pressEnter();
         });
@@ -126,8 +118,7 @@ public class CalculateCreditTests extends TestBase {
             sleep(1500);
             $("div[data-test-id=workStartDateBucket]").click();
             $$("div.menu-item").find(text("Более 1 года")).click();
-        //    $("div.menu-item").$(withText("Более 1 года")).click();
-        });
+          });
         step("Select work position", () -> {
             sleep(2000);
             $("input[name=workPost]").setValue("Бухгалтер");
@@ -212,9 +203,27 @@ public class CalculateCreditTests extends TestBase {
 
     }
 
-    public void getCheckbox() {
-        ElementsCollection elements = $$("input[type='checkbox']").snapshot();
-        elements.stream().forEach(e -> System.out.println(e));
-        System.out.println($("input[type='checkbox']").sibling(0));
+    @Test
+    @Description("Positive test fill out the online form")
+    @DisplayName("Alfa tests")
+    void calculateMortgageTest(){
+
+        step("Open main page " + config.webUrl(), () -> {
+            open(config.webUrl());
+
+        });
+        step("Scroll to mortgage tab ", () -> {
+            $("div[data-test-id=tabs-list-tabTitle-1]").scrollTo().click();
+        });
+        step("Select property value", () -> {
+            ElementsCollection sliders = $$("input[type=range]");
+            sliders.get(1).scrollTo().click();
+            actions().moveToElement(sliders.get(1)).moveByOffset(-159, 0).click().perform();
+       //     $(byText("Наше предложение")).scrollIntoView(true);
+
+            sleep(5000);
+        });
+
     }
+
 }
