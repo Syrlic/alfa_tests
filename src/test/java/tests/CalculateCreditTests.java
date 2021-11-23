@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Description;
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static config.Project.config;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CalculateCreditTests extends TestBase {
 
@@ -33,7 +35,7 @@ public class CalculateCreditTests extends TestBase {
             sleep(2000);
         });
         step("Fill out first names", () -> {
-         //   $("input[name='firstName']").scrollTo();
+            //   $("input[name='firstName']").scrollTo();
             $("input[name='firstName']").setValue("Семен").pressTab();
         });
         step("Fill out middle names", () -> {
@@ -41,7 +43,7 @@ public class CalculateCreditTests extends TestBase {
         });
         step("Select gender if displaying", () -> {
             sleep(2000);
-                $("button[data-test-id='sex-m']").scrollTo().click();
+            $("button[data-test-id='sex-m']").scrollTo().click();
         });
         step("Fill out phone", () -> {
             $("input[name='phone']").setValue("9032334955");
@@ -118,7 +120,7 @@ public class CalculateCreditTests extends TestBase {
             sleep(1500);
             $("div[data-test-id=workStartDateBucket]").click();
             $$("div.menu-item").find(text("Более 1 года")).click();
-          });
+        });
         step("Select work position", () -> {
             sleep(2000);
             $("input[name=workPost]").setValue("Бухгалтер");
@@ -206,22 +208,29 @@ public class CalculateCreditTests extends TestBase {
     @Test
     @Description("Positive test fill out the online form")
     @DisplayName("Alfa tests")
-    void calculateMortgageTest(){
+    void calculateMortgageTest() {
 
         step("Open main page " + config.webUrl(), () -> {
             open(config.webUrl());
-
         });
         step("Scroll to mortgage tab ", () -> {
             $("div[data-test-id=tabs-list-tabTitle-1]").scrollTo().click();
         });
-        step("Select property value", () -> {
+        step("Select credit settings on sliders", () -> {
             ElementsCollection sliders = $$("input[type=range]");
             sliders.get(1).scrollTo().click();
             actions().moveToElement(sliders.get(1)).moveByOffset(-159, 0).click().perform();
-       //     $(byText("Наше предложение")).scrollIntoView(true);
-
-            sleep(5000);
+            sliders.get(2).scrollTo().click();
+            actions().moveToElement(sliders.get(2)).moveByOffset(-170, 0).click().perform();
+            sliders.get(3).scrollTo().click();
+            actions().moveToElement(sliders.get(3)).moveByOffset(-139, 0).click().perform();
+            $$("button").filter(Condition.attribute("data-test-id","btnMinus")).get(1).click();
+            $("#buttonId").click();
+            $(byText("Калькулятор ипотеки на новостройку")).scrollTo().click();
+            $("button[data-test-id=payment-plan-button]").click();
+            String paymentSchedule = $$("h1").get(1).getText();
+            assertThat(paymentSchedule).isEqualTo("График платежей");
+           
         });
 
     }
